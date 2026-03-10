@@ -118,7 +118,7 @@ iterations = -1
 
 while True:
     try:
-        iterations = int(input("How many iterations would you like to train on?: "))
+        iterations = int(input("How many iterations would you like to train on? (Recommendation: At least >100000 to reach approximately Nash Equillibrium): "))
         if iterations < 0:
             print("Please enter a non-negative integer.")
             continue
