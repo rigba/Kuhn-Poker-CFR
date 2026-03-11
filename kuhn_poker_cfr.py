@@ -159,14 +159,11 @@ def action_acronym_to_action_no(str):
         
 def pass_or_bet_input():
     while True:
-        try:
-            response = input("Would you like to pass or bet? P/B: ")
-            if response != "P" and response != "B":
-                print("Please enter Pass(P) or Bet(B)")
-
-            return response
-        except ValueError:
+        response = input("Would you like to pass or bet? P/B: ").upper()
+        if response not in ("P", "B"):
             print("Please enter Pass(P) or Bet(B)")
+            continue
+        return response
             
 def get_bot_action(strategy: list[float]): # map mixed strategy dist to action
     r = random.random()
@@ -181,22 +178,22 @@ def get_bot_action(strategy: list[float]): # map mixed strategy dist to action
     
     return a
 
-
 def is_terminal(history: str):
     return history in ["pp", "bp", "pbp", "bb"]
 
-def get_payout(history:str, cards: list[int]) -> int:
-    
-    is_player_card_higher = cards[0] > cards[1]
-  
+def get_payout(history: str, player_card: int, bot_card: int, who_is_first: int) -> int:
+    is_player_card_higher = player_card > bot_card
+
     if history == "pp":
         return 1 if is_player_card_higher else -1
-    elif history == "bp":
-        return 1      # player bet, bot folded
-    elif history == "pbp":
-        return -1     # bot bet, player folded
     elif history == "bb":
-        return 2 if is_player_card_higher else -2  
+        return 2 if is_player_card_higher else -2
+    elif history == "bp":
+        return 1 if who_is_first == 0 else -1
+    elif history == "pbp":
+        return -1 if who_is_first == 0 else 1
+    else:
+        raise ValueError(f"Invalid terminal history: {history}")
 
 while True:
     try:
@@ -233,7 +230,7 @@ else:
             if current_player == 0:
                 action = action_acronym_to_action_no(pass_or_bet_input().lower())
             else:
-                action = get_bot_action(node_map[str(bot_card) + history].strategy)
+                action = get_bot_action(node_map[str(bot_card) + history].get_avg_strategy())
                 print("Your opponent chose to " + action_to_pass_bet(action, True))
 
             history += action_to_pass_bet(action, False)
