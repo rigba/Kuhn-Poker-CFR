@@ -249,7 +249,7 @@ else:
             else:
                 print("The bot played a terminal pass action.")
                 
-        payout = get_payout(history, cards[:2])
+        payout = get_payout(history, player_card, bot_card, who_is_first)
         
         if payout < 0:
             print("You lost this hand!")
