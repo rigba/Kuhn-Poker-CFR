@@ -179,14 +179,14 @@ def get_bot_action(strategy: list[float]): # map mixed strategy dist to action
     return a
 
 def is_terminal(history: str):
-    return history in ["pp", "bp", "pbp", "bb"]
+    return history in ["pp", "bp", "pbp", "bb", "pbb"]
 
 def get_payout(history: str, player_card: int, bot_card: int, who_is_first: int) -> int:
     is_player_card_higher = player_card > bot_card
 
     if history == "pp":
         return 1 if is_player_card_higher else -1
-    elif history == "bb":
+    elif history == "bb" or history == "pbb":
         return 2 if is_player_card_higher else -2
     elif history == "bp":
         return 1 if who_is_first == 0 else -1
